@@ -16,6 +16,8 @@ async function getData() {
 		return data;
 	} catch(error) {
 		alert(error);
+		loaderView.clearLoader();
+		errorMessageView.renderErrorMessage();
 	}
 }
 
