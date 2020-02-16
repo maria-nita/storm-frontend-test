@@ -1,0 +1,20 @@
+.loader {
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+    &__spinner {
+        height: 50px;
+        width: 50px;
+        background-color: $off-white;
+        border-right: 2px solid $black;
+        border-radius: 100%;
+        transform-origin: 44% 50%;
+        animation: rotate 1.5s infinite linear;
+    }
+}
+@keyframes rotate {
+0% {
+    transform: rotate(0); }
+100% {
+    transform: rotate(360deg); } 
+}

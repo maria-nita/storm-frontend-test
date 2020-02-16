@@ -28,14 +28,40 @@ function renderTitle(value, priority) {
 	elements.taskList.insertAdjacentHTML('beforeend', markup);
 }
 
+function renderErrorMessage() {
+	const error = `<p>An error has occured and this content cannot be rendered.</p><br />`;
+	elements.taskList.insertAdjacentHTML('afterbegin', error);
+}
+
+function renderLoader() {
+	const loader = `
+		<div class="loader">
+			<div class="loader__spinner"></div>
+        </div>
+    `;
+    elements.taskList.insertAdjacentHTML('afterbegin', loader);
+};
+
+function clearLoader() {
+	const loader = document.querySelector('.loader');
+	if (loader) {
+		loader.parentElement.removeChild(loader);
+	}
+}
+renderLoader();
+
 getData().then(data => {
 	apiTasks = data;
 	if (apiTasks) {
 		apiTasks.forEach(function(task) {
 			if (task.title && task.importance !== '') {
 				renderTitle(task.title, task.importance);
+				clearLoader();
 			}
 		});
+	} else {
+		clearLoader();
+		renderErrorMessage();
 	}
 });
 
