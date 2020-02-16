@@ -1,0 +1,41 @@
+.task-list {
+    &__task {
+        margin-bottom: 5px;
+        padding: 10px 16px;
+
+        &--priority-0 {
+            background-color: $light-pink;
+            border-left: 4px solid $pink;
+        }
+        &--priority-1 {
+            background-color: $light-yellow;
+            border-left: 4px solid $yellow;
+        }
+        &--priority-2 {
+            background-color: $light-blue;
+            border-left: 4px solid $blue;
+        }
+    }
+
+    input[type="checkbox"] {
+        opacity: 0;
+        position: absolute;
+        left: -999px;
+    }
+
+    label {
+        padding-left: 30px;
+        line-height: 20px;
+
+        &::before {
+            content: "";
+            height: 20px;
+            width: 20px;
+            background-color: $off-white;
+            position: absolute;
+            box-shadow: 0px 3px 3px 3px rgba($black, 0.05);
+            left: 40px;
+            display: inline-block;
+        }
+    }
+}

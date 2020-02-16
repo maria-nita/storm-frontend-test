@@ -1,0 +1,25 @@
+body {
+    font-family: $font;
+    color: $black;
+    background-color: $off-white;
+}
+
+h1 {
+    color: $black;
+    font-size: 23px;
+}
+
+.container {
+    margin: 0 20px;
+}
+
+.wrapper {
+    border-bottom: 3px solid $black;
+    border-top: 3px solid $black;
+}
+
+.stormid {
+    font-size: 10px;
+    text-align: right;
+    padding: 7px 0;
+}
