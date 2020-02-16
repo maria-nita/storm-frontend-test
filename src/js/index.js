@@ -1,12 +1,13 @@
 import axios from 'axios';
 import '../css/index.scss';
 
-var apiTasks;
+import { elements } from './views/base';
 
-const elements = {
-	taskList: document.querySelector('.task-list'),
-	tasks: ''
-}
+import * as taskListView from './views/taskListView';
+import * as errorMessageView from './views/errorMessageView';
+import * as loaderView from './views/loaderView';
+
+var apiTasks;
 
 async function getData() {
 	try {
@@ -18,50 +19,20 @@ async function getData() {
 	}
 }
 
-function renderTitle(value, priority) {
-	const markup = `
-	<div class="task-list__task task-list__task--priority-${priority}">
-		<input type="checkbox" id="${value}" name="${value}">
-		<label for="${value}">${value}</label>
-	</div>	
-	`;
-	elements.taskList.insertAdjacentHTML('beforeend', markup);
-}
-
-function renderErrorMessage() {
-	const error = `<p>An error has occured and this content cannot be rendered.</p><br />`;
-	elements.taskList.insertAdjacentHTML('afterbegin', error);
-}
-
-function renderLoader() {
-	const loader = `
-		<div class="loader">
-			<div class="loader__spinner"></div>
-        </div>
-    `;
-    elements.taskList.insertAdjacentHTML('afterbegin', loader);
-};
-
-function clearLoader() {
-	const loader = document.querySelector('.loader');
-	if (loader) {
-		loader.parentElement.removeChild(loader);
-	}
-}
-renderLoader();
+loaderView.renderLoader();
 
 getData().then(data => {
 	apiTasks = data;
 	if (apiTasks) {
 		apiTasks.forEach(function(task) {
 			if (task.title && task.importance !== '') {
-				renderTitle(task.title, task.importance);
-				clearLoader();
+				taskListView.renderTitle(task);
+				loaderView.clearLoader();
 			}
 		});
 	} else {
 		clearLoader();
-		renderErrorMessage();
+		errorMessageView.renderErrorMessage();
 	}
 });
 
