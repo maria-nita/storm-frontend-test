@@ -1,0 +1,24 @@
+.add-item {
+    &__button {
+        font-size: 18px;
+        border: none;
+        border-radius: 27px;
+        box-shadow: 0px 3px 3px 3px rgba($black, 0.05);
+        padding: 5px 25px;
+        margin-right: 10px;
+
+        &:hover, &:focus {
+            box-shadow: 0px 3px 3px 3px rgba($black, 0.2);
+            outline: none;
+        }
+
+        &::before {
+            content: '+';
+            height: 20px;
+            width: 20px;
+            font-size: 33px;
+            line-height: 40px;
+            padding-right: 10px;
+        }
+    }
+}

@@ -6,9 +6,20 @@ import { elements } from './views/base';
 import * as taskListView from './views/taskListView';
 import * as errorMessageView from './views/errorMessageView';
 import * as loaderView from './views/loaderView';
+import * as addItemView from './views/addItemView';
 
 var uniqid = require('uniqid');
 var apiTasks;
+
+addItemView.renderAddItemButton();
+elements.addTask = document.querySelector('.add-item__button');
+elements.addTask.addEventListener('click', function() {
+	elements.addTaskForm = document.querySelectorAll('.add-item__form');
+	if (elements.addTaskForm.length !== 1) {
+		addItemView.renderAddItemForm();
+	}
+	
+});
 
 async function getData() {
 	try {
@@ -62,8 +73,6 @@ getData().then(data => {
 		})
 	}
 });
-
-console.log(uniqid())
 
 
 
