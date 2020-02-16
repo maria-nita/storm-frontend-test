@@ -7,6 +7,7 @@ import * as taskListView from './views/taskListView';
 import * as errorMessageView from './views/errorMessageView';
 import * as loaderView from './views/loaderView';
 
+var uniqid = require('uniqid');
 var apiTasks;
 
 async function getData() {
@@ -62,6 +63,7 @@ getData().then(data => {
 	}
 });
 
+console.log(uniqid())
 
 
 
