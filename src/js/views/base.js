@@ -1,4 +1,4 @@
 export const elements = {
-	taskList: document.querySelector('.task-list'),
-	tasks: ''
+    taskList: document.querySelector('.task-list'),
+    tasks: ''
 }
