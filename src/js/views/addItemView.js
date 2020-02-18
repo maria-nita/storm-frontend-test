@@ -11,10 +11,12 @@ export const renderAddItemForm = () => {
             <div class="add-item__form-group">
                 <label for="new-title">Task title</label>
                 <input type="text" id="new-title" name="new-title">
+                <p class="add-item__form-group--title-error hidden">This field is required.</p>
             </div>
             <div class="add-item__form-group">
                 <label for="new-priority">Importance level</label>
                 <input type="number" id="new-priority" name="new-priority">
+                <p class="add-item__form-group--priority-error hidden">This field is required. Please make sure you entered either 0, 1 or 2.</p>
             </div>
             <div class="add-item__form-group">
                 <button class="add-item__submit">Submit</button>

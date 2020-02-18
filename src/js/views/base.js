@@ -5,5 +5,7 @@ export const elements = {
     addTask: '',
     addTaskForm: '',
     submitTaskForm: '',
+    titleError: '',
+    priorityError: '',
     wrapper: document.querySelector('.wrapper')
 }

@@ -27,17 +27,30 @@ function readFormData(element) {
 	return inputValue;
 }
 
+function isInRange(value, lowerLimit, upperLimit) {
+	return value <= upperLimit && value >= lowerLimit;
+}
+
+function addNewItem(object) {
+	axios.post('http://localhost:4000/api/task', {
+		title: object.titleValue,
+		importance: object.priorityValue
+	});
+}
+
 loaderView.renderLoader();
 
 addItemView.renderAddItemButton();
 elements.addTask = document.querySelector('.add-item__button');
+
 elements.addTask.addEventListener('click', function() {
 	
 	elements.addTaskForm = document.querySelectorAll('.add-item__form');
 	if (elements.addTaskForm.length !== 1) {
 
 		addItemView.renderAddItemForm();
-
+		elements.titleError = document.querySelector('.add-item__form-group--title-error');
+		elements.priorityError = document.querySelector('.add-item__form-group--priority-error');
 		elements.submitTaskForm = document.querySelector('.add-item__submit');
 		const newItem = {
 			titleField: document.querySelector('#new-title'),
@@ -46,36 +59,56 @@ elements.addTask.addEventListener('click', function() {
 			priorityValue: ''
 		}
 		
-		console.log(newItem.id, newItem.titleField, newItem.priorityField);
-
 		if (elements.submitTaskForm !== null) {
 			elements.submitTaskForm.addEventListener('click', function() {
-				//front end validation TO DO
 
 				newItem.titleValue = readFormData(newItem.titleField);
-				newItem.priorityValue = readFormData(newItem.priorityField);
-				axios.post('http://localhost:4000/api/task', {
-					title: newItem.titleValue,
-					importance: newItem.priorityValue
-				});
-				addItemView.clearAddItemForm();
+				newItem.priorityValue = parseFloat(readFormData(newItem.priorityField));
+
+				var errorArray = [];
+				
+				if (newItem.titleValue === '') {
+					newItem.titleField.classList.add('error');
+					elements.titleError.classList.remove('hidden');
+					errorArray.push('title error');
+				}
+				if (!Number.isInteger(newItem.priorityValue) || !isInRange(newItem.priorityValue, 0, 2)) {
+					newItem.priorityField.classList.add('error');
+					elements.priorityError.classList.remove('hidden');
+					errorArray.push('priority error');
+				}
+
+				if (errorArray.length === 0) {
+					addNewItem(newItem);
+					addItemView.clearAddItemForm();
+					taskListView.clearTasks();
+					renderTasksList();
+				}
+				
 			});
 		}
 	}
 });
 
-getData().then(data => {
+function processData(data) {
 	apiTasks = data;
 	if (apiTasks) {
 		apiTasks.forEach(function(task) {
 			if (task.title && task.importance !== '') {
-				var checkedStatus;
+				var checkedStatus, priority;
+				if (task.importance == 0) {
+					priority = "high";
+				} else if (task.importance == 1) {
+					priority = "medium";
+				} else if (task.importance == 2) {
+					priority = "low";
+				}
 				if (task.isDone === "true") {
 					checkedStatus = 'checked';
 				} else if (task.isDone === "false") {
 					checkedStatus = '';
 				}
-				taskListView.renderTitle(task, checkedStatus);
+				taskListView.renderTasks(task, checkedStatus, priority);
 				loaderView.clearLoader();
 			}
 		});
@@ -83,7 +116,9 @@ getData().then(data => {
 		clearLoader();
 		errorMessageView.renderErrorMessage();
 	}
-}).then(function() {
+}
+
+function updateStatus() {
 	elements.tasks = document.querySelectorAll('.task-list__task');
 	if (elements.tasks !== '') {
 		const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -101,7 +136,11 @@ getData().then(data => {
 			});
 		})
 	}
-});
+}
 
+function renderTasksList() {
+	getData().then(processData).finally(updateStatus);
+}
 
+renderTasksList();
 
