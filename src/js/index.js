@@ -1,26 +1,14 @@
-import axios from 'axios';
 import '../css/index.scss';
 
 import { elements } from './views/base';
 
 import * as taskListView from './views/taskListView';
-import * as errorMessageView from './views/errorMessageView';
 import * as loaderView from './views/loaderView';
 import * as addItemView from './views/addItemView';
 
-var apiTasks;
+import Tasks from './models/Tasks';
 
-async function getData() {
-	try {
-		const resultAPI = await axios.get('http://localhost:4000/api/task');
-		const data = resultAPI.data;
-		return data;
-	} catch(error) {
-		alert(error);
-		loaderView.clearLoader();
-		errorMessageView.renderErrorMessage();
-	}
-}
+var taskLogic = new Tasks();
 
 function readFormData(element) {
 	var inputValue = element.value;
@@ -29,13 +17,6 @@ function readFormData(element) {
 
 function isInRange(value, lowerLimit, upperLimit) {
 	return value <= upperLimit && value >= lowerLimit;
-}
-
-function addNewItem(object) {
-	axios.post('http://localhost:4000/api/task', {
-		title: object.titleValue,
-		importance: object.priorityValue
-	});
 }
 
 loaderView.renderLoader();
@@ -79,10 +60,13 @@ elements.addTask.addEventListener('click', function() {
 				}
 
 				if (errorArray.length === 0) {
-					addNewItem(newItem);
+					//Tasks
+					taskLogic.addNewItem(newItem);
+
 					addItemView.clearAddItemForm();
 					taskListView.clearTasks();
-					renderTasksList();
+					//Tasks
+					taskLogic.renderTasksList();
 				}
 				
 			});
@@ -90,57 +74,5 @@ elements.addTask.addEventListener('click', function() {
 	}
 });
 
-function processData(data) {
-	apiTasks = data;
-	if (apiTasks) {
-		apiTasks.forEach(function(task) {
-			if (task.title && task.importance !== '') {
-				var checkedStatus, priority;
-				if (task.importance == 0) {
-					priority = "high";
-				} else if (task.importance == 1) {
-					priority = "medium";
-				} else if (task.importance == 2) {
-					priority = "low";
-				}
-				if (task.isDone === "true") {
-					checkedStatus = 'checked';
-				} else if (task.isDone === "false") {
-					checkedStatus = '';
-				}
-				taskListView.renderTasks(task, checkedStatus, priority);
-				loaderView.clearLoader();
-			}
-		});
-	} else {
-		clearLoader();
-		errorMessageView.renderErrorMessage();
-	}
-}
-
-function updateStatus() {
-	elements.tasks = document.querySelectorAll('.task-list__task');
-	if (elements.tasks !== '') {
-		const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-		checkboxes.forEach(function(input) {
-			input.addEventListener('change', function() {
-				if (this.checked) {
-					axios.patch(`http://localhost:4000/api/task/${input.dataset.apiId}`, {
-						isDone: "true"
-					});
-				} else {
-					axios.patch(`http://localhost:4000/api/task/${input.dataset.apiId}`, {
-						isDone: "false"
-					});
-				}
-			});
-		})
-	}
-}
-
-function renderTasksList() {
-	getData().then(processData).finally(updateStatus);
-}
-
-renderTasksList();
+taskLogic.renderTasksList();
 
