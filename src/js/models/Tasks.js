@@ -4,6 +4,7 @@ import { elements } from '../views/base';
 import * as taskListView from '../views/taskListView';
 import * as errorMessageView from '../views/errorMessageView';
 import * as loaderView from '../views/loaderView';
+import * as noItemsView from '../views/noItemsView';
 
 export default class Tasks {
     async getData() {
@@ -14,6 +15,7 @@ export default class Tasks {
         } catch(error) {
             alert(error);
             loaderView.clearLoader();
+            noItemsView.clearNoItemsMessage();
             errorMessageView.renderErrorMessage();
         }
     }
@@ -43,31 +45,50 @@ export default class Tasks {
                         checkedStatus = '';
                     }
                     taskListView.renderTasks(task, checkedStatus, priority);
+                    noItemsView.clearNoItemsMessage();
                     loaderView.clearLoader();
                 }
             });
+        } else if (apiTasks.length === 0) {
+            console.log('here1');
+            loaderView.clearLoader();
+            noItemsView.renderNoItemsMessage();
         } else {
-            clearLoader();
+            loaderView.clearLoader();
             errorMessageView.renderErrorMessage();
         }
     }
     updateStatus() {
         elements.tasks = document.querySelectorAll('.task-list__task');
-        if (elements.tasks !== '') {
+
+        if (elements.tasks !== '' && elements.tasks.length >= 1) {
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
             checkboxes.forEach(function(input) {
                 input.addEventListener('change', function() {
                     if (this.checked) {
-                        axios.patch(`http://localhost:4000/api/task/${input.dataset.apiId}`, {
+                        axios.patch(`http://localhost:4000/api/task/${input.parentElement.dataset.apiId}`, {
                             isDone: "true"
                         });
                     } else {
-                        axios.patch(`http://localhost:4000/api/task/${input.dataset.apiId}`, {
+                        axios.patch(`http://localhost:4000/api/task/${input.parentElement.dataset.apiId}`, {
                             isDone: "false"
                         });
                     }
                 });
             })
+
+            elements.tasks.forEach(function(item) {
+                const deleteButton = item.querySelector('.task-list__delete-task');
+                deleteButton.addEventListener('click',  function() {
+                    axios.delete(`http://localhost:4000/api/task/${item.dataset.apiId}`);
+                    item.parentElement.removeChild(item);
+
+                    if (elements.tasks.length === 0) {
+                        noItemsView.renderNoItemsMessage();
+                    }
+                });
+            });
         }
     }
     renderTasksList() {

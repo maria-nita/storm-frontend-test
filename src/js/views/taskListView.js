@@ -2,9 +2,10 @@ import { elements } from './base';
 
 export const renderTasks = (item, status, priority) => {
 	const markup = `
-	<div class="task-list__task task-list__task--priority-${item.importance}">
-		<input type="checkbox" data-api-id="${item.id}" id="${item.title}" name="${item.title}" ${status}>
+	<div class="task-list__task task-list__task--priority-${item.importance}" data-api-id="${item.id}">
+		<input type="checkbox" id="${item.title}" name="${item.title}" ${status}>
 		<label for="${item.title}">${item.title} (Priority: ${priority})</label>
+		<button type="button" class="task-list__delete-task">Delete</button>
 	</div>
 	`;
 	elements.taskList.insertAdjacentHTML('beforeend', markup);
@@ -12,7 +13,7 @@ export const renderTasks = (item, status, priority) => {
 
 export const clearTasks = () => {
 	const tasks = document.querySelectorAll('.task-list__task');
-	if (tasks) {
+	if (tasks.length >= 1) {
 		tasks.forEach(task => task.parentElement.removeChild(task));
 	}
 }

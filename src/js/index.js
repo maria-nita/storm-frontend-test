@@ -33,6 +33,7 @@ elements.addTask.addEventListener('click', function() {
 		elements.titleError = document.querySelector('.add-item__form-group--title-error');
 		elements.priorityError = document.querySelector('.add-item__form-group--priority-error');
 		elements.submitTaskForm = document.querySelector('.add-item__submit');
+
 		const newItem = {
 			titleField: document.querySelector('#new-title'),
 			priorityField: document.querySelector('#new-priority'),
@@ -42,6 +43,11 @@ elements.addTask.addEventListener('click', function() {
 		
 		if (elements.submitTaskForm !== null) {
 			elements.submitTaskForm.addEventListener('click', function() {
+
+				newItem.titleField.classList.remove('error');
+				elements.titleError.classList.add('hidden');
+				newItem.priorityField.classList.remove('error');
+				elements.priorityError.classList.add('hidden');
 
 				newItem.titleValue = readFormData(newItem.titleField);
 				newItem.priorityValue = parseFloat(readFormData(newItem.priorityField));
@@ -60,12 +66,9 @@ elements.addTask.addEventListener('click', function() {
 				}
 
 				if (errorArray.length === 0) {
-					//Tasks
 					taskLogic.addNewItem(newItem);
-
 					addItemView.clearAddItemForm();
 					taskListView.clearTasks();
-					//Tasks
 					taskLogic.renderTasksList();
 				}
 				
