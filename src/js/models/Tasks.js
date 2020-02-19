@@ -28,7 +28,7 @@ export default class Tasks {
     processData(data) {
         var apiTasks;
         apiTasks = data;
-        if (apiTasks) {
+        if (apiTasks && apiTasks.length >= 1) {
             apiTasks.forEach(function(task) {
                 if (task.title && task.importance !== '') {
                     var checkedStatus, priority;
@@ -50,7 +50,6 @@ export default class Tasks {
                 }
             });
         } else if (apiTasks.length === 0) {
-            console.log('here1');
             loaderView.clearLoader();
             noItemsView.renderNoItemsMessage();
         } else {
@@ -78,13 +77,15 @@ export default class Tasks {
                 });
             })
 
+            var counter = elements.tasks.length;
+
             elements.tasks.forEach(function(item) {
                 const deleteButton = item.querySelector('.task-list__delete-task');
                 deleteButton.addEventListener('click',  function() {
                     axios.delete(`http://localhost:4000/api/task/${item.dataset.apiId}`);
                     item.parentElement.removeChild(item);
-
-                    if (elements.tasks.length === 0) {
+                    counter = counter - 1;
+                    if (counter == 0) {
                         noItemsView.renderNoItemsMessage();
                     }
                 });
